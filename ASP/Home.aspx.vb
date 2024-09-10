@@ -6,6 +6,9 @@ Public Class _Default
     Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\journal.accdb")
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Request.Cookies("email") Is Nothing Then
+            Response.Redirect("Default.aspx")
+        End If
         If Not IsPostBack Then
             Dim topicId As Integer = 1
             If Integer.TryParse(Request.QueryString("topicId"), topicId) Then

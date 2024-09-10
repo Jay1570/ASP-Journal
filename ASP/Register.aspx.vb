@@ -12,11 +12,12 @@ Public Class Register
 
     Protected Sub btnRegister_Click(sender As Object, e As EventArgs) Handles btnRegister.Click
         Try
+            Dim name As String = txtName.Text
             Dim password As String = txtPassword.Text
             Dim email As String = txtEmail.Text
             Dim confirmPassword As String = txtConfirmPassword.Text
 
-            If password.IsNullOrWhiteSpace() Or email.IsNullOrWhiteSpace() Or email.IsNullOrWhiteSpace() Or confirmPassword.IsNullOrWhiteSpace Then
+            If password.IsNullOrWhiteSpace() Or email.IsNullOrWhiteSpace() Or name.IsNullOrWhiteSpace() Or confirmPassword.IsNullOrWhiteSpace Then
                 MsgBox("All Fields are mandatory", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
                 Return
             End If
@@ -38,8 +39,9 @@ Public Class Register
             End If
 
             reader.Close()
-            cmd.CommandText = "INSERT INTO Users ([password], [email]) VALUES (@password, @email)"
+            cmd.CommandText = "INSERT INTO Users ([name],[password], [email]) VALUES (@name,@password, @email)"
             cmd.Connection = cn
+            cmd.Parameters.AddWithValue("@name", name)
             cmd.Parameters.AddWithValue("@password", password)
             cmd.Parameters.AddWithValue("@email", email)
             cmd.ExecuteNonQuery()
@@ -47,7 +49,7 @@ Public Class Register
 
             Dim emailCookie As New HttpCookie("email")
             emailCookie.Value = email
-            emailCookie.Expires = DateTime.Now.AddSeconds(10)
+            emailCookie.Expires = DateTime.Now.AddMinutes(10)
             Response.Cookies.Add(emailCookie)
 
             Session("email") = email

@@ -13,18 +13,18 @@ Public Class SiteMaster
 
     Private Sub LoadNavBar()
         Try
-            Dim query As String = "SELECT ID, topicName FROM Topics"
+            Dim query As String = "SELECT ID, topicName FROM Topics ORDER BY ID"
             Dim cmd As New OleDbCommand(query, cn)
             cn.Open()
             Dim reader As OleDbDataReader = cmd.ExecuteReader()
-            Dim navHtml As String = String.Empty
+            Dim navHtml As String = "<div class='scroll-container'><ul>"
 
             While reader.Read()
                 Dim topicId As Integer = Convert.ToInt32(reader("ID"))
                 Dim topicName As String = reader("topicName").ToString()
                 navHtml &= $"<li><a href='Home.aspx?topicId={topicId}'>{topicName}</a></li>"
             End While
-
+            navHtml &= "</ul></div>"
             NavBarContent.Text = navHtml
             cn.Close()
         Catch ex As Exception

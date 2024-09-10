@@ -32,7 +32,7 @@ Public Class Login
                 reader.Close()
                 Dim emailCookie As New HttpCookie("email")
                 emailCookie.Value = email
-                emailCookie.Expires = DateTime.Now.AddSeconds(1)
+                emailCookie.Expires = DateTime.Now.AddMinutes(10)
                 Response.Cookies.Add(emailCookie)
                 Session("email") = email
                 Response.Redirect("Home.aspx", False)
