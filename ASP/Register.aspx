@@ -3,7 +3,9 @@
 
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <center><h2>Register</h2></center>
+            <div class="form-group">
+                <h2>Register</h2>
+            </div>
             <form>
                 <div class="form-group mt-3">
                     <label for="txtName">Name</label>
@@ -11,7 +13,7 @@
                 </div>
                 <div class="form-group">
                     <label for="txtEmail">Email</label>
-                    <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" />
+                    <asp:TextBox ID="txtEmail" TextMode="Email" runat="server" CssClass="form-control" />
                 </div>
                 <div class="form-group">
                     <label for="txtPassword">Password</label>
@@ -26,7 +28,7 @@
                 </div>
             </form>
             <p class="mt-3">
-                Already have an account? <a href="<%= ResolveUrl("~/Default.aspx") %>">Login here</a>.
+                Already have an account? <a href="<%= ResolveUrl("~/Login.aspx") %>">Login here</a>.
             </p>
         </div>
     </div>

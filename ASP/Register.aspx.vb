@@ -27,23 +27,23 @@ Public Class Register
                 Return
             End If
 
-            Dim cmd As New OleDbCommand("SELECT * FROM Users WHERE [email]='" & email & "'", cn)
+            Dim cmd As New OleDbCommand("SELECT COUNT(ID) FROM Users WHERE [email]=@email", cn)
+            cmd.Parameters.AddWithValue("@email", email)
             cn.Open()
-            Dim reader As OleDbDataReader = cmd.ExecuteReader()
+            Dim alreadyTaken = CInt(cmd.ExecuteScalar())
+            cn.Close()
 
-            If reader.Read() Then
-                reader.Close()
-                cn.Close()
-                MsgBox("Email Already Exists", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
+            If alreadyTaken > 0 Then
+                MsgBox("Email has been registered already ", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
                 Return
             End If
 
-            reader.Close()
-            cmd.CommandText = "INSERT INTO Users ([name],[password], [email]) VALUES (@name,@password, @email)"
-            cmd.Connection = cn
+            cmd = New OleDbCommand("INSERT INTO Users ([name],[password], [email]) VALUES (@name,@password, @email)", cn)
+            cmd.Parameters.Clear()
             cmd.Parameters.AddWithValue("@name", name)
             cmd.Parameters.AddWithValue("@password", password)
             cmd.Parameters.AddWithValue("@email", email)
+            cn.Open()
             cmd.ExecuteNonQuery()
             cn.Close()
 

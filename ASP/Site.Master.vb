@@ -9,15 +9,21 @@ Public Class SiteMaster
         If Not IsPostBack Then
             LoadNavBar()
         End If
+        If Request.Cookies("email") IsNot Nothing Then
+            LoginOrProfile.HRef = "Profile.aspx"
+            LoginOrProfile.InnerText = "Profile"
+        Else
+            LoginOrProfile.HRef = "Login.aspx"
+        End If
     End Sub
 
     Private Sub LoadNavBar()
         Try
-            Dim query As String = "SELECT ID, topicName FROM Topics ORDER BY ID"
+            Dim query As String = "Select ID, topicName FROM Topics ORDER BY ID"
             Dim cmd As New OleDbCommand(query, cn)
             cn.Open()
             Dim reader As OleDbDataReader = cmd.ExecuteReader()
-            Dim navHtml As String = "<div class='scroll-container'><ul>"
+            Dim navHtml As String = "<div Class='scroll-container'><ul>"
 
             While reader.Read()
                 Dim topicId As Integer = Convert.ToInt32(reader("ID"))

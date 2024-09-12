@@ -1,46 +1,33 @@
 ﻿Imports System.Data.OleDb
-Imports Microsoft.Ajax.Utilities
 
-Public Class Login
-    Inherits System.Web.UI.Page
-
+Public Class _Default
+    Inherits Page
 
     Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\journal.accdb")
 
-    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        If Request.Cookies("email") IsNot Nothing Then
-            Response.Redirect("Home.aspx")
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Request.Cookies("email") Is Nothing Then
+            Response.Redirect("Login.aspx")
+        Else
+            Session("email") = Request.Cookies("email").Value.ToString()
+        End If
+        If Not IsPostBack Then
+            Dim topicId As Integer = 1
+            If Integer.TryParse(Request.QueryString("topicId"), topicId) Then
+                LoadTopicContent(topicId)
+            Else
+                LoadTopicContent(1)
+            End If
         End If
     End Sub
 
-    Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
+    Private Sub LoadTopicContent(ByVal topicId As Integer)
         Try
-            Dim email As String = txtEmail.Text
-            Dim pass As String = txtPassword.Text
-
-            If email.IsNullOrWhiteSpace() Or pass.IsNullOrWhiteSpace() Then
-                MsgBox("All Fields are mandatory", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
-                Return
-            End If
-
-            Dim cmd As New OleDbCommand("SELECT * FROM users WHERE [email] = @email AND [password] = @password", cn)
-            cmd.Parameters.AddWithValue("@email", email)
-            cmd.Parameters.AddWithValue("@password", pass)
+            Dim cmd As New OleDbCommand("SELECT content FROM Topics WHERE ID=" & topicId, cn)
             cn.Open()
-            Dim reader As OleDbDataReader = cmd.ExecuteReader()
-            If reader.Read() Then
-                reader.Close()
-                Dim emailCookie As New HttpCookie("email")
-                emailCookie.Value = email
-                emailCookie.Expires = DateTime.Now.AddMinutes(10)
-                Response.Cookies.Add(emailCookie)
-                Session("email") = email
-                Response.Redirect("Home.aspx", False)
-            Else
-                reader.Close()
-                MsgBox("Invalid email or password", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
-            End If
+            Dim contentText As String = cmd.ExecuteScalar()
             cn.Close()
+            content.Text = contentText
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
             cn.Close()
