@@ -63,4 +63,37 @@ Public Class Profile
             cn.Close()
         End Try
     End Sub
+
+    Private Sub btnSignOut_Click(sender As Object, e As EventArgs) Handles btnSignOut.Click
+        Dim result As MsgBoxResult = MsgBox("Are you sure you want to sign out?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question)
+        If result = MsgBoxResult.Yes Then
+            Session.Clear()
+            Session.Abandon()
+            Dim emailCookie As New HttpCookie("email")
+            emailCookie.Expires = DateTime.Now.AddMinutes(-1)
+            Response.Cookies.Add(emailCookie)
+            MsgBox("Signed Out Successfully", MsgBoxStyle.Information Or MsgBoxStyle.OkOnly)
+            Response.Redirect("Default.aspx")
+        End If
+    End Sub
+
+    Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
+        Dim result As MsgBoxResult = MsgBox("Are you sure you want to Delete your Account?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question)
+        If result = MsgBoxResult.Yes Then
+            Dim cmd As New OleDbCommand("DELETE FROM Users WHERE [email] = @email", cn)
+            cmd.Parameters.AddWithValue("@email", Session("email").ToString())
+            cn.Open()
+            Dim execute As Integer = cmd.ExecuteNonQuery()
+            cn.Close()
+            If execute > 0 Then
+                Session.Clear()
+                Session.Abandon()
+                Dim emailCookie As New HttpCookie("email")
+                emailCookie.Expires = DateTime.Now.AddMinutes(-1)
+                Response.Cookies.Add(emailCookie)
+                MsgBox("Profile Deleted Successfully", MsgBoxStyle.Information Or MsgBoxStyle.OkOnly)
+                Response.Redirect("Default.aspx")
+            End If
+        End If
+    End Sub
 End Class

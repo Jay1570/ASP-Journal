@@ -9,7 +9,7 @@ Public Class SiteMaster
         If Not IsPostBack Then
             LoadNavBar()
         End If
-        If Request.Cookies("email") IsNot Nothing Then
+        If Request.Cookies("email") IsNot Nothing And Session("email") IsNot Nothing Then
             LoginOrProfile.HRef = "Profile.aspx"
             LoginOrProfile.InnerText = "Profile"
         Else

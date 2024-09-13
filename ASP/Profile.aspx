@@ -31,5 +31,11 @@
         <div class="col-sm-2">
             <asp:Button ID="btnSaveDetails" runat="server" CssClass="btn btn-primary" Text="Update Details" />
         </div>
+        <div class="col-sm-2">
+            <asp:Button ID="btnSignOut" runat="server" CssClass="btn btn-warning" Text="Signout" />
+        </div>
+        <div class="col-sm-2">
+            <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete Account" />
+        </div>
     </div>
 </asp:Content>
