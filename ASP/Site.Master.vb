@@ -28,7 +28,7 @@ Public Class SiteMaster
             While reader.Read()
                 Dim topicId As Integer = Convert.ToInt32(reader("ID"))
                 Dim topicName As String = reader("topicName").ToString()
-                navHtml &= $"<li><a href='Home.aspx?topicId={topicId}'>{topicName}</a></li>"
+                navHtml &= $"<li><a href='Default.aspx?topicId={topicId}'>{topicName}</a></li>"
             End While
             navHtml &= "</ul></div>"
             NavBarContent.Text = navHtml
