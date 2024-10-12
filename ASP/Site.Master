@@ -13,9 +13,9 @@
     </asp:PlaceHolder>
 
     <webopt:bundlereference runat="server" path="~/Content/css" />
+    <link href="~/Content/Mystyle.css" rel="stylesheet" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <style>
-        /* Basic layout styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -38,36 +38,33 @@
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        /* Set fixed height and enable scrollbars */
-.scroll-container {
-    max-height: 85vh;
-    overflow-y: auto;  /* Enable vertical scrolling */
-    overflow-x: hidden; /* Disable horizontal scrolling */
-    border: 1px solid #ccc; /* Optional: Add border */
-    padding: 5px; /* Optional: Add padding */
-}
+        .scroll-container {
+            max-height: 85vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
 
-/* Style for the list items */
-.scroll-container ul {
-    list-style-type: none; /* Remove bullet points */
-    padding: 0;
-    margin: 0;
-}
+        .scroll-container ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
 
-.scroll-container li {
-    margin: 5px 0; /* Optional: Add margin between items */
-}
+        .scroll-container li {
+            margin: 5px 0;
+        }
 
-.scroll-container a {
-    text-decoration: none;
-    color: #333; /* Adjust the color as needed */
-}
+        .scroll-container a {
+            text-decoration: none;
+            color: #333;
+        }
 
-.scroll-container a:hover {
-    text-decoration: underline;
-    color: #007bff; /* Adjust hover color */
-}
-
+        .scroll-container a:hover {
+            text-decoration: underline;
+            color: #007bff;
+        }
 
         #navbar ul {
             list-style-type: none;
@@ -132,6 +129,7 @@
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/Default.aspx?topicId=1">Home</a></li>
                         <li class="nav-item"><a class="nav-link" id="LoginOrProfile" runat="server" href="~/Login.aspx">Login</a></li>
                         <li class="nav-item"><a class="nav-link" id="AddTopic" runat="server" href="~/Topics.aspx">Add Topic</a></li>
+                        <li class="nav-item"><a class="nav-link" id="ManageTopics" runat="server" href="~/ManageTopics.aspx">Your Topics</a></li>
                     </ul>
                 </div>
             </div>

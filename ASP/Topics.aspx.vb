@@ -8,7 +8,7 @@ Public Class Topics
         If IsPostBack Then
             Return
         End If
-        If Session("email") Is Nothing Then
+        If Session("id") Is Nothing Then
             MsgBox("You are not logged in...", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
             Response.Redirect("Default.aspx")
             Return
@@ -25,11 +25,7 @@ Public Class Topics
     Private Sub LoadTopicContent(ByVal topicId As Integer)
         Try
             Dim cmd As New OleDbCommand
-            Dim email = Session("email").ToString()
-            cmd = New OleDbCommand("SELECT ID FROM Users WHERE email='" & email & "'", cn)
-            cn.Open()
-            Dim id = CInt(cmd.ExecuteScalar())
-            cn.Close()
+            Dim id = Session("id")
             cmd = New OleDbCommand("SELECT topicName,content,UserId FROM Topics WHERE ID=" & topicId & "AND UserId=" & id, cn)
             cn.Open()
             Dim reader As OleDbDataReader = cmd.ExecuteReader()
@@ -51,11 +47,7 @@ Public Class Topics
         Try
             Dim topicId = Request.QueryString("topicId")
             Dim cmd As New OleDbCommand
-            Dim email = Session("email").ToString()
-            cmd = New OleDbCommand("SELECT ID FROM Users WHERE email='" & email & "'", cn)
-            cn.Open()
-            Dim id = CInt(cmd.ExecuteScalar())
-            cn.Close()
+            Dim id = Session("id")
             If btnSave.Text = "Add Topic" Then
                 cmd = New OleDbCommand("INSERT INTO Topics (UserId,topicName,content) VALUES (?,?,?)", cn)
                 cmd.Parameters.AddWithValue("UserId", id)

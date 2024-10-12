@@ -21,20 +21,21 @@ Public Class Login
                 Return
             End If
 
-            Dim cmd As New OleDbCommand("SELECT COUNT(ID) FROM Users WHERE [email] = @email AND [password] = @password", cn)
+            Dim cmd As New OleDbCommand("SELECT ID FROM Users WHERE [email] = @email AND [password] = @password", cn)
             cmd.Parameters.AddWithValue("@email", email)
             cmd.Parameters.AddWithValue("@password", pass)
             cn.Open()
-            Dim isCorrect = CInt(cmd.ExecuteScalar())
-            cn.Close()
-            If isCorrect > 0 Then
-                Dim emailCookie As New HttpCookie("email")
-                emailCookie.Value = email
-                emailCookie.Expires = DateTime.Now.AddMinutes(10)
-                Response.Cookies.Add(emailCookie)
-                Session("email") = email
+            Dim id As Integer
+            If Integer.TryParse(cmd.ExecuteScalar, id) Then
+                Dim userCookie As New HttpCookie("id")
+                userCookie.Value = id
+                userCookie.Expires = DateTime.Now.AddDays(1)
+                Response.Cookies.Add(userCookie)
+                Session("id") = id
+                cn.Close()
                 Response.Redirect("Default.aspx", False)
             Else
+                cn.Close()
                 MsgBox("Invalid email or password", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
             End If
         Catch ex As Exception

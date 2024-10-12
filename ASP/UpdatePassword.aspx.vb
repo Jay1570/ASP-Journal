@@ -7,7 +7,7 @@ Public Class UpdatePassword
     Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\journal.accdb")
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        If Session("email") Is Nothing Then
+        If Session("id") Is Nothing Then
             MsgBox("You are not logged in...", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
             Response.Redirect("Default.aspx")
         End If
@@ -15,7 +15,7 @@ Public Class UpdatePassword
 
     Private Sub btnUpdatePass_Click(sender As Object, e As EventArgs) Handles btnUpdatePass.Click
         Try
-            Dim email As String = Session("email").ToString()
+            Dim id = Session("id")
             Dim oldPass As String = txtOldPass.Text
             Dim newPass As String = txtNewPass.Text
             Dim confirmPass As String = txtConfirmPassword.Text
@@ -30,9 +30,9 @@ Public Class UpdatePassword
                 Return
             End If
 
-            Dim cmd As New OleDbCommand("SELECT COUNT(ID) FROM Users WHERE [email] = @email AND [password] = @password", cn)
+            Dim cmd As New OleDbCommand("SELECT COUNT(ID) FROM Users WHERE [ID] = @id AND [password] = @password", cn)
 
-            cmd.Parameters.AddWithValue("@email", email)
+            cmd.Parameters.AddWithValue("@id", id)
             cmd.Parameters.AddWithValue("@password", oldPass)
             cn.Open()
             Dim rowCount = CInt(cmd.ExecuteScalar())
@@ -49,9 +49,9 @@ Public Class UpdatePassword
             End If
 
             cmd.Parameters.Clear()
-            cmd = New OleDbCommand("UPDATE users SET [password] = @newpassword WHERE [email] = @email;", cn)
+            cmd = New OleDbCommand("UPDATE users SET [password] = @newpassword WHERE [ID] = @id;", cn)
             cmd.Parameters.AddWithValue("@newpassword", newPass)
-            cmd.Parameters.AddWithValue("@email", email)
+            cmd.Parameters.AddWithValue("@id", id)
             cn.Open()
             Dim execute As Integer = cmd.ExecuteNonQuery()
             cn.Close()

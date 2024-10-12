@@ -75,13 +75,4 @@ Partial Public Class Profile
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDelete As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''gvTopics control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents gvTopics As Global.System.Web.UI.WebControls.GridView
 End Class

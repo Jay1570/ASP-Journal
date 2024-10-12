@@ -10,20 +10,19 @@ Public Class Profile
         If IsPostBack Then
             Return
         End If
-        If Session("email") Is Nothing Then
+        If Session("id") Is Nothing Then
             MsgBox("You are not logged in...", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
             Response.Redirect("Default.aspx")
             Return
         End If
         LoadUserProfile()
-        LoadUserTopics()
     End Sub
 
     Private Sub LoadUserProfile()
         Try
-            Dim email As String = Session("email").ToString()
-            Dim cmd As New OleDbCommand("SELECT name, email FROM Users WHERE [email] = @email", cn)
-            cmd.Parameters.AddWithValue("@email", email)
+            Dim id = Session("id")
+            Dim cmd As New OleDbCommand("SELECT name, email FROM Users WHERE [ID] = @id", cn)
+            cmd.Parameters.AddWithValue("@id", id)
             cn.Open()
             Dim reader = cmd.ExecuteReader()
             If reader.Read() Then
@@ -31,22 +30,6 @@ Public Class Profile
                 txtEmail.Text = reader("email").ToString()
             End If
             reader.Close()
-            cn.Close()
-        Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
-            cn.Close()
-        End Try
-    End Sub
-
-    Private Sub LoadUserTopics()
-        Try
-            Dim email As String = Session("email").ToString()
-            Dim cmd As New OleDbCommand("SELECT T.ID, T.topicName FROM Topics T INNER JOIN Users U ON T.UserId = U.ID WHERE U.email = ?", cn)
-            cmd.Parameters.AddWithValue("email", email)
-            cn.Open()
-            Dim reader As OleDbDataReader = cmd.ExecuteReader()
-            gvTopics.DataSource = reader
-            gvTopics.DataBind()
             cn.Close()
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
@@ -74,19 +57,14 @@ Public Class Profile
                 Return
             End If
 
-            Dim cmd As New OleDbCommand("UPDATE Users SET [name] = @name, [email] = @email WHERE [email] = @oldEmail", cn)
+            Dim cmd As New OleDbCommand("UPDATE Users SET [name] = @name, [email] = @email WHERE [id] = @id", cn)
             cmd.Parameters.AddWithValue("@name", name)
             cmd.Parameters.AddWithValue("@email", email)
-            cmd.Parameters.AddWithValue("@oldEmail", Session("email").ToString())
+            cmd.Parameters.AddWithValue("@id", Session("id"))
             cn.Open()
             Dim execute As Integer = cmd.ExecuteNonQuery()
             cn.Close()
             If execute > 0 Then
-                Session("email") = email
-                Dim emailCookie As New HttpCookie("email")
-                emailCookie.Value = email
-                emailCookie.Expires = DateTime.Now.AddMinutes(10)
-                Response.Cookies.Add(emailCookie)
                 MsgBox("Profile Updated Successfully", MsgBoxStyle.Information Or MsgBoxStyle.OkOnly)
             End If
         Catch ex As Exception
@@ -100,9 +78,9 @@ Public Class Profile
         If result = MsgBoxResult.Yes Then
             Session.Clear()
             Session.Abandon()
-            Dim emailCookie As New HttpCookie("email")
-            emailCookie.Expires = DateTime.Now.AddMinutes(-1)
-            Response.Cookies.Add(emailCookie)
+            Dim userCookie As New HttpCookie("id")
+            userCookie.Expires = DateTime.Now.AddMinutes(-1)
+            Response.Cookies.Add(userCookie)
             MsgBox("Signed Out Successfully", MsgBoxStyle.Information Or MsgBoxStyle.OkOnly)
             Response.Redirect("Default.aspx")
         End If
@@ -111,39 +89,21 @@ Public Class Profile
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
         Dim result As MsgBoxResult = MsgBox("Are you sure you want to Delete your Account?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question)
         If result = MsgBoxResult.Yes Then
-            Dim cmd As New OleDbCommand("DELETE FROM Users WHERE [email] = @email", cn)
-            cmd.Parameters.AddWithValue("@email", Session("email").ToString())
+            Dim cmd As New OleDbCommand("DELETE FROM Users WHERE [ID] = @id", cn)
+            cmd.Parameters.AddWithValue("@id", Session("id"))
             cn.Open()
             Dim execute As Integer = cmd.ExecuteNonQuery()
             cn.Close()
             If execute > 0 Then
                 Session.Clear()
                 Session.Abandon()
-                Dim emailCookie As New HttpCookie("email")
-                emailCookie.Expires = DateTime.Now.AddMinutes(-1)
-                Response.Cookies.Add(emailCookie)
+                Dim userCookie As New HttpCookie("id")
+                userCookie.Expires = DateTime.Now.AddMinutes(-1)
+                Response.Cookies.Add(userCookie)
                 MsgBox("Profile Deleted Successfully", MsgBoxStyle.Information Or MsgBoxStyle.OkOnly)
                 Response.Redirect("Default.aspx")
             End If
         End If
     End Sub
 
-    Protected Sub btnTopicDelete_Click(sender As Object, e As EventArgs)
-        Try
-            Dim btnTopicDelete As Button = CType(sender, Button)
-            Dim topicId As Integer = Convert.ToInt32(btnTopicDelete.CommandArgument)
-            Dim cmd As New OleDbCommand("DELETE FROM Topics WHERE ID = @topicId", cn)
-            cmd.Parameters.AddWithValue("@topicId", topicId)
-            cn.Open()
-            Dim execute As Integer = cmd.ExecuteNonQuery()
-            cn.Close()
-            If execute > 0 Then
-                MsgBox("Topic Deleted Successfully", MsgBoxStyle.Information Or MsgBoxStyle.OkOnly)
-                LoadUserTopics()
-            End If
-        Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
-            cn.Close()
-        End Try
-    End Sub
 End Class

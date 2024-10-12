@@ -45,14 +45,16 @@ Public Class Register
             cmd.Parameters.AddWithValue("@email", email)
             cn.Open()
             cmd.ExecuteNonQuery()
+            cmd.CommandText = "SELECT @@IDENTITY"
+            Dim id As Integer = CInt(cmd.ExecuteScalar())
             cn.Close()
 
-            Dim emailCookie As New HttpCookie("email")
-            emailCookie.Value = email
-            emailCookie.Expires = DateTime.Now.AddMinutes(10)
-            Response.Cookies.Add(emailCookie)
+            Dim userCookie As New HttpCookie("id")
+            userCookie.Value = id
+            userCookie.Expires = DateTime.Now.AddDays(10)
+            Response.Cookies.Add(userCookie)
 
-            Session("email") = email
+            Session("id") = id
             Response.Redirect("Default.aspx", False)
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)

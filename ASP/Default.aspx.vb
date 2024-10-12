@@ -7,11 +7,11 @@ Public Class _Default
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
-            If Request.Cookies("email") Is Nothing Then
+            If Request.Cookies("id") Is Nothing Then
                 Response.Redirect("Login.aspx")
                 Return
             Else
-                Session("email") = Request.Cookies("email").Value.ToString()
+                Session("id") = Request.Cookies("id").Value
             End If
             Dim topicId As Integer = 1
             If Integer.TryParse(Request.QueryString("topicId"), topicId) Then

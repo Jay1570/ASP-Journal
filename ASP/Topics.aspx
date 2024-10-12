@@ -25,11 +25,16 @@
                         <asp:TextBox ID="txtTitle" runat="server" CssClass="form-control title-textbox" />
                     </div>
                     <div class="form-group">
-                        <label for="txtDescription">Description</label>
+                        <label for="txtDescription">Description(in HTML Format)</label>
                         <asp:TextBox ID="txtDescription" runat="server" TextMode="MultiLine" CssClass="form-control content-textbox" />
                     </div>
-                    <div class="form-group">
-                        <asp:Button ID="btnSave" runat="server" Text="" CssClass="btn btn-primary form-control mt-3" />
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <asp:Button ID="btnSave" runat="server" Text="" CssClass="btn btn-primary form-control mt-3" />
+                        </div>
+                        <div class="col-md-4">
+                            <a class="btn btn-danger form-control mt-3" href="javascript:window.history.back()">Cancel</a>
+                        </div>
                     </div>
                 </form>
             </div>

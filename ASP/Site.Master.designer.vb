@@ -32,6 +32,15 @@ Partial Public Class SiteMaster
     Protected WithEvents AddTopic As Global.System.Web.UI.HtmlControls.HtmlAnchor
 
     '''<summary>
+    '''ManageTopics control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ManageTopics As Global.System.Web.UI.HtmlControls.HtmlAnchor
+
+    '''<summary>
     '''NavBarContent control.
     '''</summary>
     '''<remarks>
