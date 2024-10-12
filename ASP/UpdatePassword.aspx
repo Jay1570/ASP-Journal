@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="UpdatePassword.aspx.vb" Inherits="ASP.UpdatePassword" %>
+﻿<%@ Page Title="Update Password" Language="vb" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="UpdatePassword.aspx.vb" Inherits="ASP.UpdatePassword" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="row justify-content-center">
         <div class="col-md-4">

@@ -10,9 +10,11 @@ Public Class SiteMaster
             LoadNavBar()
         End If
         If Request.Cookies("email") IsNot Nothing And Session("email") IsNot Nothing Then
+            AddTopic.Visible = True
             LoginOrProfile.HRef = "Profile.aspx"
             LoginOrProfile.InnerText = "Profile"
         Else
+            AddTopic.Visible = False
             LoginOrProfile.HRef = "Login.aspx"
         End If
     End Sub

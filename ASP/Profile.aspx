@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="vb" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="Profile.aspx.vb" Inherits="ASP.Profile" %>
+﻿<%@ Page Title="Profile" Language="vb" AutoEventWireup="false" MasterPageFile="~/Site.Master" CodeBehind="Profile.aspx.vb" Inherits="ASP.Profile" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="row mb-4">
         <div class="col-md-6">
@@ -26,9 +26,6 @@
     <br />
     <div class="row mb-3 justify-content-center">
         <div class="col-sm-2">
-            <a ID="btnUpdatePassword" class="btn btn-warning" href="UpdatePassword.aspx">Update Password</a>
-        </div>
-        <div class="col-sm-2">
             <asp:Button ID="btnSaveDetails" runat="server" CssClass="btn btn-primary" Text="Update Details" />
         </div>
         <div class="col-sm-2">
@@ -36,6 +33,27 @@
         </div>
         <div class="col-sm-2">
             <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete Account" />
+        </div>
+        <div class="col-sm-2">
+            <a ID="btnUpdatePassword" class="btn btn-warning" href="UpdatePassword.aspx">Update Password</a>
+        </div>
+    </div>
+    <br />
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2>Your Topics</h2>
+            <asp:GridView ID="gvTopics" runat="server" AutoGenerateColumns="False" CssClass="table table-striped">
+                <Columns>
+                    <asp:BoundField DataField="ID" HeaderText="Topic ID" />
+                    <asp:BoundField DataField="topicName" HeaderText="Topic Name" />
+                    <asp:TemplateField HeaderText="Actions">
+                        <ItemTemplate>
+                            <asp:HyperLink ID="lnkEdit" runat="server" Text="Edit" NavigateUrl='<%# "Topics.aspx?topicId=" & Eval("ID") %>' CssClass="btn btn-primary btn-sm" />
+                            <asp:Button ID="btnTopicDelete" runat="server" Text="Delete" CommandArgument='<%# Eval("ID") %>' CssClass="btn btn-danger btn-sm" OnClick="btnTopicDelete_Click" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+            </asp:GridView>
         </div>
     </div>
 </asp:Content>
