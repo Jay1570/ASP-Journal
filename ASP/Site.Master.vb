@@ -1,9 +1,9 @@
-﻿Imports System.Data.OleDb
+﻿Imports System.Data.SqlClient
 
 Public Class SiteMaster
     Inherits MasterPage
 
-    Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\journal.accdb")
+    Dim cn As New SqlConnection(ConfigurationManager.ConnectionStrings("Journal").ConnectionString)
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
@@ -24,9 +24,9 @@ Public Class SiteMaster
     Private Sub LoadNavBar()
         Try
             Dim query As String = "Select ID, topicName FROM Topics ORDER BY ID"
-            Dim cmd As New OleDbCommand(query, cn)
+            Dim cmd As New SqlCommand(query, cn)
             cn.Open()
-            Dim reader As OleDbDataReader = cmd.ExecuteReader()
+            Dim reader As SqlDataReader = cmd.ExecuteReader()
             Dim navHtml As String = "<div Class='scroll-container'><ul>"
 
             While reader.Read()
@@ -38,8 +38,12 @@ Public Class SiteMaster
             NavBarContent.Text = navHtml
             cn.Close()
         Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
+            Response.Write("<script>alert('Error :- " & ex.Message & "');</script>")
             cn.Close()
         End Try
+    End Sub
+
+    Public Sub RefreshNavBar()
+        LoadNavBar()
     End Sub
 End Class

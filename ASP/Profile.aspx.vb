@@ -1,17 +1,17 @@
-﻿Imports System.Data.OleDb
+﻿Imports System.Data.SqlClient
 Imports Microsoft.Ajax.Utilities
 
 Public Class Profile
     Inherits System.Web.UI.Page
 
-    Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\journal.accdb")
+    Dim cn As New SqlConnection(ConfigurationManager.ConnectionStrings("Journal").ConnectionString)
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If IsPostBack Then
             Return
         End If
         If Session("id") Is Nothing Then
-            MsgBox("You are not logged in...", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
+            Response.Write("<script>alert('You are not logged in.');</script>")
             Response.Redirect("Default.aspx")
             Return
         End If
@@ -21,7 +21,7 @@ Public Class Profile
     Private Sub LoadUserProfile()
         Try
             Dim id = Session("id")
-            Dim cmd As New OleDbCommand("SELECT name, email FROM Users WHERE [ID] = @id", cn)
+            Dim cmd As New SqlCommand("SELECT name, email FROM Users WHERE [ID] = @id", cn)
             cmd.Parameters.AddWithValue("@id", id)
             cn.Open()
             Dim reader = cmd.ExecuteReader()
@@ -32,7 +32,7 @@ Public Class Profile
             reader.Close()
             cn.Close()
         Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
+            Response.Write("<script>alert('Error :- " & ex.Message & "');</script>")
             cn.Close()
         End Try
     End Sub
@@ -49,15 +49,15 @@ Public Class Profile
 
     Private Sub btnUpdateProfile_Click(sender As Object, e As EventArgs) Handles btnSaveDetails.Click
         Try
-            Dim email As String = txtEmail.Text
-            Dim name As String = txtName.Text
+            Dim email As String = txtEmail.Text.Trim()
+            Dim name As String = txtName.Text.Trim()
 
             If email.IsNullOrWhiteSpace() Or name.IsNullOrWhiteSpace() Then
-                MsgBox("All Fields are mandatory", MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
+                Response.Write("<script>alert('All Fields are mandatory.');</script>")
                 Return
             End If
 
-            Dim cmd As New OleDbCommand("UPDATE Users SET [name] = @name, [email] = @email WHERE [id] = @id", cn)
+            Dim cmd As New SqlCommand("UPDATE Users SET [name] = @name, [email] = @email WHERE [id] = @id", cn)
             cmd.Parameters.AddWithValue("@name", name)
             cmd.Parameters.AddWithValue("@email", email)
             cmd.Parameters.AddWithValue("@id", Session("id"))
@@ -65,10 +65,10 @@ Public Class Profile
             Dim execute As Integer = cmd.ExecuteNonQuery()
             cn.Close()
             If execute > 0 Then
-                MsgBox("Profile Updated Successfully", MsgBoxStyle.Information Or MsgBoxStyle.OkOnly)
+                Response.Write("<script>alert('Profile updated successfully');</script>")
             End If
         Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical Or MsgBoxStyle.OkOnly)
+            Response.Write("<script>alert('Error :- " & ex.Message & "');</script>")
             cn.Close()
         End Try
     End Sub
@@ -89,21 +89,27 @@ Public Class Profile
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
         Dim result As MsgBoxResult = MsgBox("Are you sure you want to Delete your Account?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question)
         If result = MsgBoxResult.Yes Then
-            Dim cmd As New OleDbCommand("DELETE FROM Users WHERE [ID] = @id", cn)
-            cmd.Parameters.AddWithValue("@id", Session("id"))
-            cn.Open()
-            Dim execute As Integer = cmd.ExecuteNonQuery()
-            cn.Close()
-            If execute > 0 Then
-                Session.Clear()
-                Session.Abandon()
-                Dim userCookie As New HttpCookie("id")
-                userCookie.Expires = DateTime.Now.AddMinutes(-1)
-                Response.Cookies.Add(userCookie)
-                MsgBox("Profile Deleted Successfully", MsgBoxStyle.Information Or MsgBoxStyle.OkOnly)
-                Response.Redirect("Default.aspx")
-            End If
+            Try
+                Dim cmd As New SqlCommand("DELETE FROM Users WHERE [ID] = @id", cn)
+                cmd.Parameters.AddWithValue("@id", Session("id"))
+                cn.Open()
+                Dim execute As Integer = cmd.ExecuteNonQuery()
+                cn.Close()
+                If execute > 0 Then
+                    Session.Clear()
+                    Session.Abandon()
+                    Dim userCookie As New HttpCookie("id")
+                    userCookie.Expires = DateTime.Now.AddMinutes(-1)
+                    Response.Cookies.Add(userCookie)
+                    Response.Write("<script>alert('Profile deleted successfully.');</script>")
+                    Response.Redirect("Default.aspx", False)
+                Else
+                    Response.Write("<script>alert('Error :- Profile not deleted.');</script>")
+                End If
+            Catch ex As Exception
+                Response.Write("<script>alert('Error :- " & ex.Message & "');</script>")
+                cn.Close()
+            End Try
         End If
     End Sub
-
 End Class
