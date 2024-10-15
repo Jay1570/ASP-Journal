@@ -58,7 +58,6 @@ Public Class Topics
             cmd.Parameters.AddWithValue("@content", txtDescription.Text)
             cn.Open()
             cmd.ExecuteNonQuery()
-            Response.Write("<script>alert('Clicked');</script>")
             If btnSave.Text = "Add Topic" Then
                 cmd.CommandText = "SELECT @@IDENTITY"
                 topicId = CInt(cmd.ExecuteScalar())
